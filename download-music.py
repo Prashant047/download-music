@@ -1,17 +1,7 @@
 import requests
 import sys
-
-try:
-    from bs4 import BeautifulSoup
-except ImportError:
-    pip.main(['install','beautifulsoup4'])
-    from bs4 import BeautifulSoup
-
-try:
-    import youtube_dl
-except ImportError:
-    pip.main(['install','youtube-dl'])
-    import youtube_dl
+from bs4 import BeautifulSoup
+import youtube_dl
 
 name_argument = str(sys.argv[1])
 
