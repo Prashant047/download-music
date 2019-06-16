@@ -1,7 +1,23 @@
+import subprocess
 import requests
 import sys
-from bs4 import BeautifulSoup
-import youtube_dl
+
+try:
+    import youtube_dl
+except ImportError:
+    subprocess.call([sys.executable, "-m", 'pip', 'install', 'youtube-dl'])
+    import youtube_dl
+
+try:
+    import inquirer
+except ImportError:
+    subprocess.call([sys.executable, "-m", 'pip', 'install', 'inquirer'])
+    import inquirer
+
+try:
+    from bs4 import BeautifulSoup
+except ImportError:
+    subprocess.call([sys.executable, "-m", 'pip', 'install', 'beautifulsoup4'])
 
 name_argument = str(sys.argv[1])
 
@@ -17,7 +33,6 @@ soup = BeautifulSoup(markup, 'html.parser')
 item_section = soup.select("ol.item-section > li")
 
 s_href = ''
-s_title = ''
 views = 0
 
 checked = 0
@@ -28,6 +43,8 @@ class_exclusion_list = [
     "div.yt-lockup-movie-vertical-poster",
     "span.yt-badge.yt-badge-live"
 ]
+
+song_dict = {}
 
 exclude_current_class = False
 for video in item_section:
@@ -51,21 +68,21 @@ for video in item_section:
         view_count = view_count[1].string
     else:
         view_count = view_count[0].string
-    view_count = view_count.split(' ')[0].split(',')
-    view_count = int(''.join(view_count))
-
+    title = title + '|' + view_count
+    
     # print(view_count)
-
-    if view_count > views:
-        views = view_count
-        s_href = href
-        s_title = title
-
+    song_dict[title] = href
     checked = checked + 1
 
+songs_list = [
+    inquirer.List('song_name',
+            message="Which one?",
+            choices=list(song_dict.keys())
+        )
+]
 
-s_href = "https://www.youtube.com{}".format(s_href)
-print("Selected :\n {} \n {} \n {}".format(s_title, s_href, views))
+answer = inquirer.prompt(songs_list)
+s_href = "https://www.youtube.com{}".format(song_dict[answer['song_name']])
 
 ydl_opts = {
     'format': 'bestaudio/best',

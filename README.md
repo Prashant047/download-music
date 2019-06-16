@@ -21,5 +21,8 @@ python3 download-music.py 'song name'
 ```
 Song is downloaded in the same directory as the execution of the script
 ### eg.
-![screenshot](./screenshot/screenshot.png)
+![screenshot](./screenshot/screenshot1.png)
+Select the song you want to download
+
+![screenshot](./screenshot/screenshot2.png)
 and that's it !
